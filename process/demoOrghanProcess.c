@@ -4,6 +4,7 @@
 #include <errno.h>
 #include <wait.h>
 
+/* 孤儿进程 */
 
 int main()
 {
