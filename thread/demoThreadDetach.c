@@ -35,7 +35,7 @@ int main()
     ret = pthread_join(tid, NULL);
     if (ret != 0)
     {
-        printf("ret:%d\n", ret, EINVAL);
+        printf("ret:%d\n", ret); //EINVAL 22
         _exit(-1);
     }
 
