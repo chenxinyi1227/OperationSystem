@@ -5,7 +5,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-
+/* 多线程：线程并发 */
 typedef struct StuInfo
 {
     int age;
