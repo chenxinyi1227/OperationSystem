@@ -21,13 +21,13 @@ typedef struct threadpool_t
 
     /* 线程池 */
     pthread_t *threadIds;     // 线程池中的线程 
-    pthread_t *magagerThread; // 线程池中的管理线程
+    pthread_t *managerThread; // 线程池中的管理线程
 
     int minThreads;      // 最小的线程数 
     int maxThreads;      // 最大的线程数 
 
-    int busyThreadNUms;     //干活的线程数 "干活的线程数 ！= 存活的线程数"
-    int liveThreadNUms;     //存活的线程数
+    int busyThreadNums;     //干活的线程数 "干活的线程数 ！= 存活的线程数"
+    int liveThreadNums;     //存活的线程数
 
     /* 锁 */
     pthread_mutex_t mutexpool;  //锁 - 维护整个线程
@@ -47,6 +47,6 @@ int threadPoolInit(threadpool_t *pool, int minThread, int maxThreads, int queueC
 int threadPoolAddTask(threadpool_t *pool, void *(worker_hander)(void *), void *arg);
 
 /* 线程池销毁 */
-int threadPoolDestory(threadpool_t *pool);
+int threadPoolDestroy(threadpool_t *pool);
 
 #endif // __THREAD_POOL_H_
