@@ -15,7 +15,7 @@ int main()
             /* 给当前进程发送Ctrl + C */
             raise(SIGINT);
             /* 等价于：kill */
-            kill(getpid());
+            kill(getpid(), SIGINT);     
         }
         printf("idx = %d\n", idx);
         sleep(1);
