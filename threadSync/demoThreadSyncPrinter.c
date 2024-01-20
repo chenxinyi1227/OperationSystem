@@ -5,6 +5,7 @@
 #include <string.h>
 #include <pthread.h>
 #include <errno.h>
+
 /* 信号量头文件*/
 pthread_mutex_t g_mutex;
 
@@ -55,6 +56,8 @@ int main()
     pthread_join(tid1, NULL);
     pthread_join(tid2, NULL);
 
+    /* 主线程使用 pthread_mutex_lock(&g_mutex) 加锁的目的是为了等待子线程执行完毕，
+    并且确保在销毁互斥锁之前，所有线程都已经退出且释放了对互斥锁的占用。 */
     pthread_mutex_lock(&g_mutex);
 
     /* 释放锁资源：必须解锁之后才可以操作此函数 */
