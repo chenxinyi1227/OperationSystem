@@ -21,7 +21,7 @@ typedef struct threadpool_t
 
     /* 线程池 */
     pthread_t *threadIds;     // 线程池中的线程 
-    pthread_t *managerThread; // 线程池中的管理线程
+    pthread_t managerThread; // 线程池中的管理线程
 
     int minThreads;      // 最小的线程数 
     int maxThreads;      // 最大的线程数 
