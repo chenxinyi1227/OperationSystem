@@ -1,52 +1,57 @@
-#ifndef __THREAD_POOL_H_
-#define __THREAD_POOL_H_
+#ifndef __THREAD_POLL_H__
+#define __THREAD_POLL_H__
 
 #include <pthread.h>
 
+/* 任务结构体 */
 typedef struct task_t
 {
-    void *(*worker_hander)(void *arg); // 钩子函数 - 回调函数 
-    void *arg; // 参数
+    void *(*function)(void *);
+    void *arg;
+    struct task_t *next;
+    pthread_mutex_t mutex;
+    pthread_cond_t cond;
+    
 }task_t;
 
 /* 线程池结构体 */
-typedef struct threadpool_t
+typedef struct threadPool_t 
 {
     /* 任务队列 */
-    task_t * taskQueue; //里面放的是函数和参数
-    int queueCapacity;  //任务队列容量
-    int queueSize;      //任务队列的任务数
-    int queueFront;     //任务队列的对头
-    int queueRear;      //任务队列的堆尾
+    task_t *taskQueue;        // 任务队列
+    int queueCapacity;        // 任务队列容量
+    int queueSize;            // 任务队列大小
+    int queueFront;           // 队列头
+    int queueRear;            // 队列尾
 
-    /* 线程池 */
-    pthread_t *threadIds;     // 线程池中的线程 
-    pthread_t managerThread; // 线程池中的管理线程
+    /* 线程数组 */
+    pthread_t *threadID;      // 线程id数组
+    pthread_t managerID;      // 管理者线程id
+    int maxSize;              // 最大线程数量
+    int minSize;              // 最小线程数量
+    int busySize;             // 忙线程数量
+    int aliveSize;            // 存活线程数量
+    int exitSize;             // 退出线程数量
+    int shutdown;             // 线程池状态
+    
 
-    int minThreads;      // 最小的线程数 
-    int maxThreads;      // 最大的线程数 
-
-    int busyThreadNums;     //干活的线程数 "干活的线程数 ！= 存活的线程数"
-    int liveThreadNums;     //存活的线程数
-
-    /* 锁 */
-    pthread_mutex_t mutexpool;  //锁 - 维护整个线程
-    pthread_mutex_t mutexBusy;  //锁 - 只维护干活线程
-    pthread_cond_t notEmpty;    //条件变量:任务队列有任务可以消费
-    pthread_cond_t notFull;     //条件变量：任务队列有空位，可以继续放
-
-    int exitThreadNums; //离开的线程数
-    int shutDown;       //关闭
-
-}threadpool_t;
+    /* 互斥锁 */
+    pthread_mutex_t mutex;
+    pthread_cond_t notEmpty;
+    pthread_cond_t notFull;
+    pthread_mutex_t busyMutex;// 忙线程数量互斥锁
+    
+}
+threadPool_t;
 
 /* 线程池初始化 */
-int threadPoolInit(threadpool_t *pool, int minThread, int maxThreads, int queueCapacity);
-
-/* 线程增加任务 */
-int threadPoolAddTask(threadpool_t *pool, void *(worker_hander)(void *), void *arg);
-
+int threadPoolInit(threadPool_t *thread_poll, int minSize, int maxSize, int queueCapacity);
+/* 线程池添加任务 */
+int threadPoolAddTask(threadPool_t *thread_poll, void *(*function)(void *), void *arg);
 /* 线程池销毁 */
-int threadPoolDestroy(threadpool_t *pool);
+int threadPoolDestroy(threadPool_t *thread_poll);
+/* 线程池启动 */
+int threadPoolStart(threadPool_t *thread_poll);
 
-#endif // __THREAD_POOL_H_
+
+#endif //__THREAD_POLL_H__
