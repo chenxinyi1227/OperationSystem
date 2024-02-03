@@ -22,13 +22,27 @@ void get_file_time(__time_t st_time)
 int main()
 {
     struct stat bufStat;
-    stat("./testCopy.c", &bufStat);
+    const char *filename;
+    printf("请输入要查看的文件名：\n");
+    char buffer[BUFFER_SIZE] = {0};
+    scanf("%s", buffer);
+    int ret = stat(buffer, &bufStat);
+    if(ret == -1)
+    {
+        perror("stat error");
+        return -1;
+    }
 
     printf("mode:%d\n", bufStat.st_mode);
     printf("st_size:%ld\n", bufStat.st_size);
 
+    char accessTime[30];
+    strftime(accessTime, sizeof(accessTime),  "%Y-%m-%d %H:%M:%S", localtime(&bufStat.st_atime));
+    printf("filename:%s\n", buffer);
+    printf("Last access time: %s\n", accessTime);
+
     /* 宏函数来判断文件类型 */
-    int ret = S_ISDIR(bufStat.st_mode);
+    ret = S_ISDIR(bufStat.st_mode);
     printf("ret:%d\n", ret);
 
     // /* 最后一次访问时间 */
